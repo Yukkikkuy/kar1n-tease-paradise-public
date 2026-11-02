@@ -1,0 +1,51 @@
+{
+  "name": "text-adventure",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev-all.mjs",
+    "dev:all": "node scripts/dev-all.mjs",
+    "dev:player": "node scripts/run-site.mjs player dev",
+    "dev:admin": "node scripts/run-site.mjs admin dev",
+    "build": "node scripts/run-site.mjs player build",
+    "build:player": "node scripts/run-site.mjs player build",
+    "build:admin": "node scripts/run-site.mjs admin build",
+    "start": "node scripts/run-site.mjs player start",
+    "start:player": "node scripts/run-site.mjs player start",
+    "start:admin": "node scripts/run-site.mjs admin start",
+    "lint": "next lint",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:reset": "prisma migrate reset --force && tsx scripts/seed.ts",
+    "setup": "prisma migrate deploy && tsx scripts/seed.ts",
+    "hosts:print": "node scripts/print-hosts.mjs",
+    "postinstall": "prisma generate",
+    "build:prod": "node scripts/build-prod.mjs",
+    "start:prod": "node scripts/start-prod.mjs",
+    "db:deploy": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^3.0.3",
+    "iron-session": "^8.0.4",
+    "nanoid": "^5.1.16",
+    "next": "14.2.35",
+    "react": "^18",
+    "react-dom": "^18",
+    "zod": "^4.6.7",
+    "prisma": "^5.22.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "dotenv": "^18.0.9",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}

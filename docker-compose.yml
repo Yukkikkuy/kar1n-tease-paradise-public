@@ -1,0 +1,28 @@
+# Optional local PostgreSQL for development (provider is postgresql).
+# Usage:
+#   docker compose up -d
+#   cp .env.example .env   # then ensure DATABASE_URL matches below
+#   npx prisma migrate deploy
+#   npm run db:seed
+#   npm run dev
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: text-adventure-pg
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: text_adventure
+    volumes:
+      - ta_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d text_adventure"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ta_pg_data:
