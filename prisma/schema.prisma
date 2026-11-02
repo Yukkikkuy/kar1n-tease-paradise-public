@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  isAdmin      Boolean  @default(false)
+  banned       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  activations Activation[]
+  progress    Progress[]
+  createdKeys LicenseKey[] @relation("KeyCreator")
+}
+
+model Game {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  coverUrl    String?
+  isFree      Boolean  @default(false)
+  published   Boolean  @default(false)
+  startNodeId String?
+  nodesJson   String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  keys        LicenseKey[]
+  activations Activation[]
+  progress    Progress[]
+}
+
+model LicenseKey {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  mode        String // "onetime" | "permanent"
+  gameId      String
+  game        Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  note        String   @default("")
+  revoked     Boolean  @default(false)
+  used        Boolean  @default(false)
+  createdById String?
+  createdBy   User?    @relation("KeyCreator", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+
+  activations Activation[]
+}
+
+model Activation {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId    String
+  game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  keyId     String
+  key       LicenseKey @relation(fields: [keyId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, gameId])
+}
+
+model Progress {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameId      String
+  game        Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  currentNode String
+  historyJson String   @default("[]")
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, gameId])
+}
+
+model SiteSettings {
+  id           String   @id @default("default")
+  heroTitle    String   @default("Kar1n Tease Paradise")
+  heroSubtitle String   @default("Kar1n 调教乐园 · 分支剧情文字冒险")
+  heroBody     String   @default("注册账号后可游玩免费作品；付费作品需使用专属秘钥激活解锁。")
+  navBrand     String   @default("Kar1n Tease Paradise")
+  updatedAt    DateTime @updatedAt
+}

@@ -1,0 +1,33 @@
+# Kar1n Tease Paradise — Render Blueprint
+# Postgres: use Neon/Supabase free (or Render Postgres after adding a card).
+# Set DATABASE_URL in the Dashboard after Apply.
+services:
+  - type: web
+    name: kar1n-tease-paradise
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: SITE_ROLE
+        value: all
+      - key: NEXT_PUBLIC_SITE_ROLE
+        value: all
+      - key: UPLOAD_DIR
+        value: /data/uploads
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: PLAYER_SITE_URL
+        fromService:
+          name: kar1n-tease-paradise
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: ADMIN_SITE_URL
+        fromService:
+          name: kar1n-tease-paradise
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
